@@ -82,7 +82,7 @@ static int lqtL_callfunc(lua_State *L, int idx, const char *name, bool once_only
     if (!lua_isuserdata(L, idx) || lua_islightuserdata(L, idx)) return 0;
     const void *ptr = lua_touserdata(L, idx);
     lua_pushvalue(L, idx); // [object]
-    lua_getfenv(L, -1); // [object, env]
+	lua_getuservalue(L, -1); // [object, env]
     if (!lua_istable(L, -1)) {
         lua_pop(L, 2); // []
         return 0;
@@ -376,7 +376,7 @@ static int lqtL_newindexfunc (lua_State *L) {
 
     // anyway, use the environment table for the userdata as per-object storage
     lua_settop(L, 3); // (=3)
-    lua_getfenv(L, 1); // (+1)
+	lua_getuservalue(L, 1); // (+1)
     if (!lua_istable(L, -1)) {
         lua_pop(L, 1); // (+0)
         return 0;
@@ -391,7 +391,7 @@ static int lqtL_newindexfunc (lua_State *L) {
 int lqtL_getoverload (lua_State *L, int index, const char *name) {
     luaL_checkstack(L, 2, "no space to grow");
     if (lua_isuserdata(L, index) && !lua_islightuserdata(L, index)) {
-        lua_getfenv(L, index); // (1)
+		lua_getuservalue(L, index); // (1)
         lua_getfield(L, -1, name); // (2)
         lua_remove(L, -2); // (1)
     } else {
@@ -416,7 +416,7 @@ static int lqtL_indexfunc (lua_State *L) {
             }
         }
         lua_settop(L, 2);
-        lua_getfenv(L, 1); // (1)
+		lua_getuservalue(L, 1); // (1)
         lua_pushvalue(L, 2); // (2)
         lua_gettable(L, -2); // (2)
         if (!lua_isnil(L, -1)) {
@@ -601,7 +601,7 @@ static void lqtL_ensurepointer (lua_State *L, const void *p) { // (+1)
         const void **pp = static_cast<const void**>(lua_newuserdata(L, sizeof(void*))); // (2)
         *pp = p; // (2)
         lua_newtable(L); // (3)
-        lua_setfenv(L, -2); // (2)
+		lua_setuservalue(L, -2); // (2)
         lua_pushlightuserdata(L, const_cast<void*>(p)); // (3)
         lua_pushvalue(L, -2); // (4)
         lua_settable(L, -4); // (2)
@@ -922,7 +922,7 @@ static int lqtL_errfunc(lua_State *L) {
 int lqtL_setErrorHandler(lua_State *L) {
 
     if(!lua_isfunction(L, 1))
-        luaL_typerror(L, 1, "function");
+		luaL_error(L, "function expected!");
 
     lqtL_getrefclasstable(L);
     lua_pushvalue(L, 1);
