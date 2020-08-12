@@ -221,7 +221,7 @@ local function Class(name, super)
 	--	2.lqt metadata fields
 	--	3.lqt class inherit check
 	local function isReversedKey(k)
-		return k:find('^__') or k:find('Lqt ') or k:find('%*$')
+		return type(k)=='number' or k:find('^__') or k:find('Lqt ') or k:find('%*$')
 	end
 
 	return function(classDef)
@@ -314,7 +314,6 @@ local function Class(name, super)
 						rawset(classDef, k, v)
 						return
 					end
-
 					if super and super[k] ~= nil then
 						super[k] = v
 					else

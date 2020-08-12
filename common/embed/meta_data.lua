@@ -24,7 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 ***************************************************************************]]
 local QtCore
 
-local bit = require 'bit'
+--local bit = require 'bit'
 
 local Flags = require 'embed.flags'
 local MetaMethod = require 'embed.meta_method'
@@ -190,11 +190,11 @@ function Class:build()
 
         table.insert(metaProperties, property.routines)
 
-        if not property_notify and bit.band(property.flags, Flags.PropertyFlags.Notify) ~= 0 then
+        if not property_notify and (property.flags & Flags.PropertyFlags.Notify) ~= 0 then
             property_notify = true
         end
 
-        if not property_revision and bit.band(property.flags, Flags.PropertyFlags.Revisioned) ~= 0 then
+        if not property_revision and (property.flags & Flags.PropertyFlags.Revisioned) ~= 0 then
             property_revision = true
         end
     end

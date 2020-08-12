@@ -104,9 +104,10 @@ static int lqtL_connect(lua_State *L) {
 
     const char *signal = luaL_checkstring(L, 2);
     const QMetaObject *senderMeta = sender->metaObject();
-    int idxS = senderMeta->indexOfSignal(signal + 1);
+    int idxS = senderMeta->indexOfSignal(signal);
     if (idxS == -1)
-        return luaL_argerror(L, 2, qPrintable(QString("no such sender signal: '%1'").arg(signal + 1)));
+        return luaL_argerror(L, 2, qPrintable(QString("no such sender signal: '%1'").arg(signal)));
+	QString signalName  = signal;
 
     QObject* receiver;
     QString methodName;
@@ -126,8 +127,6 @@ static int lqtL_connect(lua_State *L) {
         if(lqtL_pcall(L, 3, 0, 0) != 0)
             lua_error(L);
 
-        methodName.prepend("1");
-
 #ifdef VERBOSE_BUILD
         printf("Connect method (%p) %d(`%s`) to lua-method `%s`\n"
             , receiver
@@ -141,12 +140,12 @@ static int lqtL_connect(lua_State *L) {
         if (receiver == NULL)
             return luaL_argerror(L, 3, "receiver not QObject*");
         const char *method = luaL_checkstring(L, 4);
-        methodName = method;
+		methodName = method;
 
         const QMetaObject *receiverMeta = receiver->metaObject();
-        int idxR = receiverMeta->indexOfMethod(method + 1);
+        int idxR = receiverMeta->indexOfMethod(method);
         if (idxR == -1)
-            return luaL_argerror(L, 4, qPrintable(QString("no such receiver method: '%1'").arg(method + 1)));
+            return luaL_argerror(L, 4, qPrintable(QString("no such receiver method: '%1'").arg(method)));
 
 #ifdef VERBOSE_BUILD
         printf("Connect method (%p) %d(`%s`) to method (%p) %d(`%s`)\n"
@@ -160,7 +159,9 @@ static int lqtL_connect(lua_State *L) {
 #endif
     }
 
-    bool ok = QObject::connect(sender, signal, receiver, qPrintable(methodName));
+	signalName.prepend("2");
+	methodName.prepend("1");
+    bool ok = QObject::connect(sender, qPrintable(signalName), receiver, qPrintable(methodName));
     lua_pushboolean(L, ok);
     return 1;
 }

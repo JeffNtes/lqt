@@ -1,5 +1,5 @@
 #!/usr/bin/lua
-dofile(arg[0]:gsub('test[/\\].+', 'examples/init.lua'))
+--dofile(arg[0]:gsub('test[/\\].+', 'examples/init.lua'))
 
 local QtCore = require "qtcore"
 local QtGui = require "qtgui"
@@ -51,7 +51,7 @@ W:setModel(M)
 
 local B = QtWidgets.QPushButton('Add Lua data')
 local counter = 1
-B:connect('2clicked()', function()
+B:connect('clicked()', function()
 	M:addAnotherString('Added text ' .. counter)
 	counter = counter + 1
 end)

@@ -40,7 +40,7 @@ local function init(self)
         )
         metaStrings = CMetaStrings(self
             -- classname & empty string
-            , { metaName, '' }
+            , { metaName, '', 'nil' }
             -- clone parent's owner data
             , metaStrings
         )

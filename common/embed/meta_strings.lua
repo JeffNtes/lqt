@@ -54,12 +54,16 @@ end
 ----------------------------------------------------------------------------------------------------
 function Class:insert(input)
     for i,s in ipairs(self) do
+        if s == 'nil' then
+            break
+        end 
         if s == input then
             return i - 1
         end
     end
-    table.insert(self, input)
-    return #self - 1
+    self[#self] = input
+    table.insert(self, 'nil')
+    return #self - 2
 end
 ----------------------------------------------------------------------------------------------------
 -- Get meta string index(0-base) from string literals

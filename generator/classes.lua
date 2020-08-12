@@ -1312,9 +1312,9 @@ end
 function output()
 	virtuals.print_shell_classes(classes) -- does that, and outputs headers
 
-	print_wrappers(classes) -- just compiles metatable list
-	print_metatables(classes) -- just collects the wrappers + generates dispatchers
-	print_class_list(classes) -- does that + prints everything related to class
+	print_wrappers() -- just compiles metatable list
+	print_metatables() -- just collects the wrappers + generates dispatchers
+	print_class_list() -- does that + prints everything related to class
 
 	signalslot.output()
 end

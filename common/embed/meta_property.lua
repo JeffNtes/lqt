@@ -112,7 +112,7 @@ end
 ]]
 local QtCore
 
-local bit = require 'bit'
+--local bit = require 'bit'
 
 local Flags = require 'embed.flags'
 ----------------------------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ end
 -- Get notify signal id
 ----------------------------------------------------------------------------------------------------
 function Class:getNotifyId(metaData)
-    if bit.band(self.flags, Flags.PropertyFlags.Notify) == 0 then
+    if (self.flags & Flags.PropertyFlags.Notify) == 0 then
         return 0
     end
     local notifySignal = self.routines[2]
