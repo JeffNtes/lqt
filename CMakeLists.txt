@@ -1,7 +1,7 @@
-#  Copyright (c) 2008 Peter Kuemmel 
+#  Copyright (c) 2008 Peter Kuemmel
 #  Copyright (c) 2008 Mauro Iazzi
 #  Copyright (c) 2011 Michal Kottman
-#  
+#
 #  Permission is hereby granted, free of charge, to any person
 #  obtaining a copy of this software and associated documentation
 #  files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
 #  copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following
 #  conditions:
-#  
+#
 #  The above copyright notice and this permission notice shall be
 #  included in all copies or substantial portions of the Software.
-#  
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 #  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 #  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -36,9 +36,9 @@ project(lqt5)
 # set(REUSE_FILES 1)
 # set( CMAKE_BUILD_TYPE Debug )
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin) 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/lib) 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/lib) 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/lib)
 
 set(LUA_ROOT_DIR J:/workplace/lua-5.3.4)
 set(LUA_INCLUDE_DIR ${LUA_ROOT_DIR}/include)
@@ -50,8 +50,6 @@ if (APPLE)
 elseif (WIN32)
 	set(CMAKE_PREFIX_PATH C:/Qt/Qt5.13.0/5.13.0/msvc2017_64/lib/cmake)
 	set(LUA_LIBRARIES ${LUA_ROOT_DIR}/lib/lua53.lib)
-	add_definitions(-DLUA_COMPAT_5_1)
-	add_definitions(-DLUA_COMPAT_5_2)
 endif()
 
 set(QT_SCHEMA_DIR ${CMAKE_BINARY_DIR}/../generator/schema)
@@ -144,7 +142,7 @@ function(build_qt_lib_binding BINDING_HEADER)
 							COMMAND cpptoxml
 								${BINDING_HEADER}
 								-C ${PP_CONFIG}
-								-Q ${QT_SCHEMA_DIR} 
+								-Q ${QT_SCHEMA_DIR}
 								-o ${GEN_XML}
 							COMMENT "Generating XML: running cpptoxml on ${BINDING_NAME} "
 							VERBATIM)
@@ -160,12 +158,12 @@ function(build_qt_lib_binding BINDING_HEADER)
 
 		add_custom_target(generate_${BINDING_NAME}_cpp
 							COMMAND ${LUA_CMD}
-								"${CMAKE_SOURCE_DIR}/generator/generator.lua" 
+								"${CMAKE_SOURCE_DIR}/generator/generator.lua"
 								${GEN_XML}
 								${EXTRA_LUA_OPTIONS}
-								-i ${BINDING_HEADER} -i lqt_qt.hpp 
+								-i ${BINDING_HEADER} -i lqt_qt.hpp
 								-i "${QT_LIBRARIES}"
-								-n ${BINDING_NAME} 
+								-n ${BINDING_NAME}
 								-t ${CMAKE_SOURCE_DIR}/generator/qtypes.lua
 								${${BINDING_NAME}_TYPES}
 								-f ${CMAKE_SOURCE_DIR}/generator/qt_internal.lua
@@ -197,10 +195,10 @@ function(build_qt_lib_binding BINDING_HEADER)
 		#	2. make -> will generate cpp files but they are not part of the Makefile (GLOB was at 1.)
 		# 	3. cmake ../lqt -Dnomerge=1 -> GLOB now finds the generated cpp files
 		#	4. make
-		file(GLOB BINDING_SRC ${LQT_GEN_DIR}/*.cpp) 
+		file(GLOB BINDING_SRC ${LQT_GEN_DIR}/*.cpp)
 		set(${COMMON}_SRC)
 		list(REMOVE_ITEM BINDING_SRC ${LQT_GEN_DIR}/${BINDING_NAME}_merged_build.cpp)
-	else()				
+	else()
 		set(${COMMON}_SRC ${${COMMON}_SRC}	${${BINDING_NAME}_GENERATED})
 	endif()
 
@@ -210,11 +208,11 @@ function(build_qt_lib_binding BINDING_HEADER)
 
 	add_library(${BINDING_NAME} MODULE ${BINDING_SRC}
 											${${COMMON}_SRC}
-											${${COMMON}_HPP} 
+											${${COMMON}_HPP}
 											${${COMMON}_MOC})
 
 	qt5_use_modules(${BINDING_NAME} ${QT_LIBRARIES})
-											
+
 	target_link_libraries(${BINDING_NAME} ${LUA_LIBS_FOR_MODULE})
 	# target_link_libraries(${BINDING_NAME} ${QT_LIBRARIES} ${LUA_LIBS_FOR_MODULE})
 	set_target_properties(${BINDING_NAME} PROPERTIES PREFIX "" COMPILE_DEFINITIONS "MODULE_${BINDING_NAME}")
