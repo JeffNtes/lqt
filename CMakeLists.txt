@@ -40,7 +40,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/lib) 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/lib) 
 
-set(LUA_ROOT_DIR C:/local/lua-5.3.5)
+set(LUA_ROOT_DIR C:/local/lua-5.3.5.x64)
 set(LUA_INCLUDE_DIR ${LUA_ROOT_DIR}/include)
 set(CMAKE_PROGRAM_PATH ${LUA_ROOT_DIR}/bin)
 
@@ -183,7 +183,7 @@ function(build_qt_lib_binding BINDING_HEADER)
 	set(COMMON COMMON_${BINDING_NAME})
 	file(GLOB ${COMMON}_SRC ${CMAKE_SOURCE_DIR}/common/*.cpp)
 	file(GLOB ${COMMON}_HPP ${CMAKE_SOURCE_DIR}/common/*.hpp)
-	file(GLOB ${COMMON}_HPP ${CMAKE_SOURCE_DIR}/common/*.inl)
+	file(GLOB ${COMMON}_INL ${CMAKE_SOURCE_DIR}/common/*.inl)
 
 	set(${BINDING_NAME}_GENERATED ${LQT_GEN_DIR}/${BINDING_NAME}_enum.cpp
 									${LQT_GEN_DIR}/${BINDING_NAME}_meta.cpp
@@ -210,7 +210,8 @@ function(build_qt_lib_binding BINDING_HEADER)
 
 	add_library(${BINDING_NAME} MODULE ${BINDING_SRC}
 											${${COMMON}_SRC}
-											${${COMMON}_HPP} 
+											${${COMMON}_HPP}
+											${${COMMON}_INL} 
 											${${COMMON}_MOC})
 
 	qt5_use_modules(${BINDING_NAME} ${QT_LIBRARIES})
