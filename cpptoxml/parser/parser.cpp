@@ -639,6 +639,37 @@ bool Parser::parseUsing(DeclarationAST *&node)
   if (!parseName(ast->name))
     return false;
 
+  // using xxx = xxx;
+  if (token_stream.lookAhead() == '=')
+  {
+	  CHECK('=');
+	  TypeSpecifierAST *spec = 0;
+	  if (!parseTypeSpecifierOrClassSpec(spec))
+	  {
+		  reportError(("Need a type specifier to declare"));
+		  return false;
+	  }
+
+	  token_stream.rewind((int)ast->name->start_token);
+	  const ListNode<InitDeclaratorAST*> *declarators = 0;
+	  if (!parseInitDeclaratorList(declarators))
+	  {
+		  //reportError(("Need an identifier to declare"));
+		  //return false;
+	  }
+	  token_stream.rewind((int)spec->end_token);
+	  ADVANCE(';', ";");
+
+	  TypedefAST *ast_ = CreateNode<TypedefAST>(_M_pool);
+	  ast_->type_specifier = spec;
+	  ast_->init_declarators = declarators;
+
+	  UPDATE_POS(ast_, start, token_stream.cursor());
+	  node = ast_;
+	  char* qs = Parser::tokenText(ast_).toLatin1().data();
+	  return true;
+  }
+
   ADVANCE(';', ";");
 
   UPDATE_POS(ast, start, token_stream.cursor());
@@ -1373,7 +1404,7 @@ bool Parser::parseEnumSpecifier(TypeSpecifierAST *&node)
 
   // skip enum class ident_name {: type};
   if (token_stream.lookAhead() == ':') {
-    if (token_stream.lookAhead(1) != Token_identifier) {
+    if (token_stream.lookAhead(1) != Token_identifier && token_stream.lookAhead(1) != Token_int) {
       token_stream.rewind((int) start);
       return false;
     }
